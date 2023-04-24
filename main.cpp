@@ -108,18 +108,17 @@ void postfixToBinaryTree(Node* queueHead, Node* &root) { //binary expression tre
 }
 
 void treetoInfix(Node* root) {//infix notation
-  if (root == NULL) {
-        return;
+  if (root != NULL) {
+    if (root->num < 48) {//if operator
+      cout << "(";
     }
-    if (root->num == '+' || root->num == '-' || root->num == '*' || root->num == '/' || root->num == '^') { // if operator
-        cout << "("; 
+    treetoInfix(root->left);
+    cout << char(root->num);
+    treetoInfix(root->right);
+    if(root->num < 48) {
+      cout << ")";
     }
-    treetoInfix(root->left); 
-    cout << root->num; 
-    treetoInfix(root->right); 
-    if (root->num == '+' || root->num == '-' || root->num == '*' || root->num == '/' || root->num == '^') { // if operator
-        cout << ")"; 
-    }
+  }
 }
 
 
