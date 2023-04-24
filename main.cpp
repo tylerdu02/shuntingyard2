@@ -53,7 +53,7 @@ int main() {
     else if (input->num == '(') {
       push(tailStack, int(expression[i]));
     }
-    else if (input->num == '+' || input->num == '*' || input->num == '-' || input->num == '/' || input->num == '^') {//operator
+    else if (input->num == '+' || input->num == '*' || input->num == '-' || input->num == '/' || input->num == '^') {//operators
       while ((tailStack != NULL) && (precedence(peek(tailStack)) >= precedence(peek(input)))) {
         enqueue(headQueue, tailQueue, pop(tailStack));
       }
@@ -87,3 +87,131 @@ int main() {
     return 0;
     }
   }
+
+void postfixToBinaryTree(Node* queueHead, Node* &root) { //binary expression tree
+  Node* input = queueHead;
+  vector<Node*>tree;
+  while(input != NULL) {
+    if (input->num > 47 && input->num < 58) {
+    tree.push_back(input);
+    }
+    else {
+      input->right = tree.back();
+      tree.pop_back();
+      input->left = tree.back();
+      tree.pop_back();
+      tree.push_back(input);
+    }
+    input = input->next;
+  }
+  root = tree[0];
+}
+
+void treetoInfix(Node* root) {//infix notation
+  if (root == NULL) {
+        return;
+    }
+    if (root->num == '+' || root->num == '-' || root->num == '*' || root->num == '/' || root->num == '^') { // if operator
+        cout << "("; 
+    }
+    treetoInfix(root->left); 
+    cout << root->num; 
+    treetoInfix(root->right); 
+    if (root->num == '+' || root->num == '-' || root->num == '*' || root->num == '/' || root->num == '^') { // if operator
+        cout << ")"; 
+    }
+}
+
+
+void treetoPrefix(Node* root) {//prefix notation
+  if (root != NULL) {
+    cout << char(root->num);
+    treetoPrefix(root->left);
+    treetoPrefix(root->right);
+  }
+}
+
+
+void treetoPostfix(Node* root) {//postfix notation
+  if (root != NULL) {
+    treetoPostfix(root->left);
+    treetoPostfix(root->right);
+    cout << char(root->num);
+  }
+}
+
+int precedence(int character) {
+  if (character== '^') {
+    return 3;
+  }
+  else if (character== '/' || character== '*') {
+    return 2;
+  }
+  else if (character== '+' || character== '-') {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+void dequeue(Node* &headQueue) { // deletes head
+    if (headQueue == NULL) {
+        cout << "Queue is empty" << endl;
+    }
+    else { // if queue is not empty
+        Node* temp = headQueue;
+        headQueue = headQueue->next;
+        delete temp;
+    }
+}
+
+void enqueue(Node* &headQueue, Node* &tailQueue, Node* newnode) {
+  if (newnode == NULL) {
+    return;
+  }
+  tailQueue = headQueue;
+  if (tailQueue == NULL) {
+    headQueue = newnode;
+    tailQueue = headQueue;
+  }
+  else {
+    while (tailQueue->next != NULL) {
+      tailQueue = tailQueue->next;
+    }
+    tailQueue->next = newnode;
+  }
+  newnode->next = NULL;
+}
+
+void push(Node* &tailStack, int operatorstack) {
+  Node* newnode = new Node(operatorstack, NULL);
+  if (tailStack == NULL) {
+    tailStack = newnode;
+  }
+  else {
+    Node* temp = tailStack;
+    tailStack = newnode;
+    newnode->next = temp;
+  }
+}
+
+Node* pop(Node* &tailStack) {//removes tail
+   if (tailStack->next == NULL) {
+    Node* returnvalue = tailStack;
+    tailStack = NULL;
+    return returnvalue;
+  }
+  Node* temp = tailStack->next;
+  Node* move = tailStack;
+  move->next = NULL;
+  tailStack = temp;
+  return move;
+}
+
+int peek(Node* tailStack) {
+  if (tailStack == NULL) { // if stack is empty
+        return 0;
+    }
+    return tailStack->num;
+}

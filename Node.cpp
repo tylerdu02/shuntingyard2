@@ -2,4 +2,9 @@
 #include <iostream>
 #include <cstring>
 
-using namespace std;
+Node:: Node(int newnum, Node* newnext) {
+    num = newnum;
+    next = newnext;
+    left = nullptr;
+    right = nullptr;
+}

@@ -1,4 +1,11 @@
 #include <cstring>
 #pragma once
 
-using namespace std;
+class Node {
+ public:
+ int num;
+ Node* next;
+ Node* left;
+ Node* right;
+ Node(int newnum, Node* newnext);
+};
